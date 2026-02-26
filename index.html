@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESRC Election Poster Maker 2026</title>
+    <!-- Modern Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-green: #1a4d2e;
+            --accent-green: #2ecc71;
+            --gold: #f1c40f;
+            --black: #050505;
+            --white: #ffffff;
+            --poster-bg: url('https://raw.githubusercontent.com/SadatPro/img/refs/heads/main/file_000000004f7872069d9dc0a8627d4d26.png');
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: #0f1712;
+            color: var(--white);
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            display: flex;
+            gap: 40px;
+            width: 100%;
+            max-width: 1200px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        /* Form Styling */
+        .controls {
+            background: #1a241f;
+            padding: 30px;
+            border-radius: 20px;
+            width: 380px;
+            border: 1px solid #2d3e35;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        h1 {
+            font-family: 'Anton', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 25px;
+            color: var(--accent-green);
+            text-align: center;
+        }
+
+        .input-group { margin-bottom: 20px; }
+        label { display: block; font-size: 12px; font-weight: 700; text-transform: uppercase; margin-bottom: 8px; color: #8fa196; }
+        
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            background: #0d1410;
+            border: 1px solid #34493e;
+            border-radius: 10px;
+            color: white;
+            font-family: inherit;
+            outline: none;
+        }
+
+        input:focus { border-color: var(--accent-green); }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .btn-primary { background: var(--accent-green); color: #000; }
+        .btn-primary:hover { background: #27ae60; transform: translateY(-2px); }
+
+        .btn-secondary { background: transparent; border: 2px solid var(--accent-green); color: var(--accent-green); margin-top: 15px; }
+        .btn-secondary:hover { background: rgba(46, 204, 113, 0.1); }
+
+        /* Poster Preview Display */
+        .preview-container {
+            flex: 1;
+            min-width: 350px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .poster-wrapper {
+            width: 100%;
+            max-width: 500px;
+            aspect-ratio: 2/3;
+            background: #000;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.8);
+            border-radius: 4px;
+        }
+
+        /* Poster Elements */
+        .p-bg {
+            position: absolute;
+            inset: 0;
+            background: var(--poster-bg);
+            background-size: cover;
+            background-position: center;
+            z-index: 1;
+        }
+
+        .p-top-banner {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            background: white;
+            color: var(--primary-green);
+            text-align: center;
+            font-family: 'Anton', sans-serif;
+            font-size: 2.3rem;
+            padding: 12px 0;
+            z-index: 10;
+            letter-spacing: 1px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.4);
+        }
+
+        .p-photo-container {
+            position: absolute;
+            bottom: 12%; /* Adjusted to sit nicely above the dark gradient */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            height: 75%;
+            z-index: 2;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+        }
+
+        .p-photo {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+            transform-origin: bottom center;
+            transition: transform 0.1s ease-out;
+        }
+
+        .p-gradient {
+            position: absolute;
+            bottom: 10%;
+            left: 0; right: 0;
+            height: 35%;
+            background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
+            z-index: 5;
+        }
+
+        .p-name-block {
+            position: absolute;
+            bottom: 13%;
+            left: 0; right: 0;
+            text-align: center;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .p-name {
+            font-family: 'Anton', sans-serif;
+            font-size: 3.8rem;
+            color: white;
+            text-transform: uppercase;
+            line-height: 1;
+            text-shadow: 0px 5px 20px rgba(0,0,0,0.9), 0px 0px 40px rgba(0,0,0,0.6);
+        }
+
+        .p-role {
+            font-family: 'Anton', sans-serif;
+            font-size: 1.8rem;
+            color: var(--accent-green);
+            text-transform: uppercase;
+            margin-top: -4px;
+            text-shadow: 0px 4px 15px rgba(0,0,0,0.9);
+            letter-spacing: 1.5px;
+        }
+
+        .p-bottom-banner {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 11%;
+            background: #08120a;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* Decorative Rings in Bottom Banner */
+        .p-deco-rings {
+            position: absolute;
+            left: -30px;
+            bottom: -50px;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            box-shadow: 0 0 0 6px #1a4d2e, 0 0 0 14px transparent, 0 0 0 20px #1a4d2e, 0 0 0 28px transparent, 0 0 0 34px #1a4d2e;
+            opacity: 0.8;
+        }
+        .p-deco-rings.right {
+            left: auto;
+            right: -20px;
+            bottom: -20px;
+            box-shadow: 0 0 0 6px #1a4d2e, 0 0 0 14px transparent, 0 0 0 20px #1a4d2e;
+        }
+
+        .p-vote-wrap {
+            font-family: 'Anton', sans-serif;
+            font-size: 3rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 2;
+        }
+        .p-vote-wrap svg {
+            width: 40px;
+            height: 40px;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .tab-btn {
+            background: #1a241f;
+            color: #8fa196;
+            border: 2px solid #2d3e35;
+            padding: 10px 30px;
+            border-radius: 30px;
+            font-family: 'Anton', sans-serif;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            letter-spacing: 1px;
+        }
+        .tab-btn.active {
+            background: var(--primary-green);
+            color: var(--white);
+            border-color: var(--accent-green);
+        }
+
+        /* Manifesto Specifics */
+        textarea {
+            width: 100%;
+            padding: 12px 15px;
+            background: #0d1410;
+            border: 1px solid #34493e;
+            border-radius: 10px;
+            color: white;
+            font-family: inherit;
+            outline: none;
+            resize: vertical;
+        }
+        textarea:focus { border-color: var(--accent-green); }
+        
+        .m-content {
+            position: absolute;
+            top: 15%;
+            left: 8%;
+            right: 8%;
+            z-index: 5;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .m-title {
+            font-family: 'Anton', sans-serif;
+            font-size: 3.5rem;
+            text-align: center;
+            color: white;
+            text-shadow: 0px 5px 15px rgba(0,0,0,0.9);
+            margin-bottom: 10px;
+            line-height: 1;
+        }
+        .m-list {
+            list-style: none;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+        .m-list li {
+            margin-bottom: 12px;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            text-shadow: 0px 2px 5px rgba(0,0,0,0.8);
+        }
+        .m-check {
+            color: var(--accent-green);
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+
+        /* Hidden Canvas */
+        #render-canvas { display: none; }
+
+        @media (max-width: 768px) {
+            .controls { width: 100%; }
+            .p-name { font-size: 3rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>ESRC Poster Generator</h1>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('poster')">POSTER MAKER</button>
+        <button class="tab-btn" onclick="switchTab('manifesto')">MANIFESTO MAKER</button>
+    </div>
+
+    <div class="container" id="poster-section">
+        <!-- Input Panel -->
+        <div class="controls">
+            <div class="input-group">
+                <label>Full Name</label>
+                <input type="text" id="nameInp" placeholder="SADAT MAHMUD" oninput="sync()">
+            </div>
+            
+            <div class="input-group">
+                <label>Position</label>
+                <select id="posInp" onchange="sync()">
+                    <option value="PRESIDENT CANDIDATE">President Candidate</option>
+                    <option value="VP CANDIDATE">VP Candidate</option>
+                    <option value="GENERAL SECRETARY">General Secretary</option>
+                    <option value="TREASURER">Treasurer</option>
+                    <option value="CULTURAL SECRETARY">Cultural Secretary</option>
+                    <option value="ORGANIZING SECRETARY">Organizing Secretary</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>Candidate Photo</label>
+                <input type="file" id="fileInp" accept="image/*" onchange="handleImg(event)">
+                <p style="font-size: 10px; color: #666; margin-top: 5px;">Pro tip: Use a PNG with background removed for best results.</p>
+            </div>
+
+            <div class="input-group">
+                <label>Image Size</label>
+                <input type="range" id="scaleInp" min="0.5" max="2.5" step="0.05" value="1.1" oninput="sync()">
+            </div>
+
+            <div style="display: flex; gap: 15px;">
+                <div class="input-group" style="flex: 1;">
+                    <label>Horizontal (X)</label>
+                    <input type="range" id="offsetXInp" min="-100" max="100" step="1" value="0" oninput="sync()">
+                </div>
+                
+                <div class="input-group" style="flex: 1;">
+                    <label>Vertical (Y)</label>
+                    <input type="range" id="offsetYInp" min="-100" max="100" step="1" value="0" oninput="sync()">
+                </div>
+            </div>
+
+            <button class="btn btn-primary" onclick="downloadPoster()">Download HD Poster</button>
+            <button class="btn btn-secondary" onclick="window.location.reload()">Reset Design</button>
+        </div>
+
+        <!-- Live Preview -->
+        <div class="preview-container">
+            <div class="poster-wrapper" id="capture-area">
+                <div class="p-bg"></div>
+                
+                <div class="p-top-banner">ESRC ELECTION 2026 -2027</div>
+
+                <div class="p-photo-container">
+                    <img id="viewPhoto" src="https://via.placeholder.com/600x800?text=Upload+Photo" class="p-photo">
+                </div>
+
+                <!-- Dark gradient to make text pop -->
+                <div class="p-gradient"></div>
+
+                <div class="p-name-block">
+                    <div class="p-name" id="viewName">SADAT MAHMUD</div>
+                    <div class="p-role" id="viewPos">PRESIDENT CANDIDATE</div>
+                </div>
+
+                <div class="p-bottom-banner">
+                    <div class="p-deco-rings"></div>
+                    <div class="p-deco-rings right"></div>
+                    <div class="p-vote-wrap">
+                        VOTE 
+                        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.02-.3 3"/>
+                            <path d="M7 22c-.6-2.8-.4-5.6.5-8"/>
+                            <path d="M17 22c.6-2.8.4-5.6-.5-8"/>
+                            <path d="M2 12a10 10 0 0 1 18.29-5.69"/>
+                            <path d="M12 2a10 10 0 0 1 10 10c0 1.1-.1 2.19-.3 3.25"/>
+                            <path d="M8 3.17A10 10 0 0 1 20.3 9.6"/>
+                            <path d="M12 18c-1.38 0-2.5-1.12-2.5-2.5V12a2.5 2.5 0 0 1 5 0v3.5c0 1.38-1.12 2.5-2.5 2.5Z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <p style="margin-top: 15px; font-size: 13px; color: #666;">Preview may look slightly different from final download.</p>
+        </div>
+    </div>
+
+    <!-- MANIFESTO SECTION -->
+    <div class="container" id="manifesto-section" style="display: none;">
+        <div class="controls">
+            <div class="input-group">
+                <label>Manifesto Title</label>
+                <input type="text" id="manTitleInp" value="MY MANIFESTO" oninput="syncMan()">
+            </div>
+            
+            <div class="input-group">
+                <label>Promises / Goals (One per line)</label>
+                <textarea id="manPointsInp" rows="8" oninput="syncMan()">1. Better Research Facilities
+2. Weekly Tech Workshops
+3. More Hackathons
+4. Transparent Budget
+5. Industry Connections</textarea>
+                <p style="font-size: 10px; color: #666; margin-top: 5px;">Keep sentences short for better layout.</p>
+            </div>
+
+            <button class="btn btn-primary" onclick="downloadManifesto()">Download HD Manifesto</button>
+            <button class="btn btn-secondary" onclick="window.location.reload()">Reset Design</button>
+        </div>
+
+        <div class="preview-container">
+            <div class="poster-wrapper">
+                <div class="p-bg"></div>
+                <div style="position: absolute; inset:0; background:rgba(0,0,0,0.65); z-index:1;"></div>
+                
+                <div class="p-top-banner">ESRC ELECTION 2026 -2027</div>
+
+                <div class="m-content">
+                    <div class="m-title" id="viewManTitle">MY MANIFESTO</div>
+                    <ul class="m-list" id="viewManPoints">
+                        <li><span class="m-check">✔</span> <span>1. Better Research Facilities</span></li>
+                        <li><span class="m-check">✔</span> <span>2. Weekly Tech Workshops</span></li>
+                        <li><span class="m-check">✔</span> <span>3. More Hackathons</span></li>
+                        <li><span class="m-check">✔</span> <span>4. Transparent Budget</span></li>
+                        <li><span class="m-check">✔</span> <span>5. Industry Connections</span></li>
+                    </ul>
+                </div>
+
+                <div class="p-bottom-banner">
+                    <div class="p-deco-rings"></div>
+                    <div class="p-deco-rings right"></div>
+                    <div class="p-vote-wrap">
+                        VOTE 
+                        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.02-.3 3"/>
+                            <path d="M7 22c-.6-2.8-.4-5.6.5-8"/>
+                            <path d="M17 22c.6-2.8.4-5.6-.5-8"/>
+                            <path d="M2 12a10 10 0 0 1 18.29-5.69"/>
+                            <path d="M12 2a10 10 0 0 1 10 10c0 1.1-.1 2.19-.3 3.25"/>
+                            <path d="M8 3.17A10 10 0 0 1 20.3 9.6"/>
+                            <path d="M12 18c-1.38 0-2.5-1.12-2.5-2.5V12a2.5 2.5 0 0 1 5 0v3.5c0 1.38-1.12 2.5-2.5 2.5Z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <p style="margin-top: 15px; font-size: 13px; color: #666;">Manifesto preview.</p>
+        </div>
+    </div>
+
+    <canvas id="render-canvas"></canvas>
+
+    <script>
+        let userImg = null;
+        const bgImgUrl = 'https://raw.githubusercontent.com/SadatPro/img/refs/heads/main/file_000000004f7872069d9dc0a8627d4d26.png';
+
+        function handleImg(e) {
+            const file = e.target.files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                userImg = new Image();
+                userImg.onload = () => {
+                    document.getElementById('viewPhoto').src = event.target.result;
+                }
+                userImg.src = event.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+
+        function sync() {
+            const name = document.getElementById('nameInp').value || "SADAT MAHMUD";
+            const pos = document.getElementById('posInp').value;
+            
+            document.getElementById('viewName').innerText = name.toUpperCase();
+            document.getElementById('viewPos').innerText = pos;
+
+            // Apply image adjustments to the live preview
+            const scale = document.getElementById('scaleInp').value;
+            const offsetX = document.getElementById('offsetXInp').value;
+            const offsetY = document.getElementById('offsetYInp').value;
+            const photoEl = document.getElementById('viewPhoto');
+            if(photoEl) {
+                photoEl.style.transform = `translate(${offsetX}%, ${offsetY}%) scale(${scale})`;
+            }
+        }
+
+        async function downloadPoster() {
+            const canvas = document.getElementById('render-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // HD Settings
+            const width = 2000;
+            const height = 3000;
+            canvas.width = width;
+            canvas.height = height;
+
+            // 1. Draw Background
+            const bg = new Image();
+            bg.crossOrigin = "anonymous";
+            bg.src = bgImgUrl;
+            
+            await new Promise(resolve => bg.onload = resolve);
+            ctx.drawImage(bg, 0, 0, width, height);
+
+            // 2. Candidate Photo with Adjustments
+            const bottomBannerHeight = 330;
+            if (userImg) {
+                // Get slider values
+                const scale = parseFloat(document.getElementById('scaleInp').value) || 1.1;
+                const offsetXPercent = parseFloat(document.getElementById('offsetXInp').value) || 0;
+                const offsetYPercent = parseFloat(document.getElementById('offsetYInp').value) || 0;
+
+                const aspect = userImg.width / userImg.height;
+                const baseTargetH = height * 0.75; // Base height taking up 75% of the canvas
+                const baseTargetW = baseTargetH * aspect;
+
+                // Apply Scale
+                const finalW = baseTargetW * scale;
+                const finalH = baseTargetH * scale;
+
+                // Adjust X based on user offset
+                const userOffsetXPixels = (offsetXPercent / 100) * baseTargetW;
+                const imgX = ((width - finalW) / 2) + userOffsetXPixels;
+                
+                // Base Y places the bottom of the unscaled image right above the name area
+                const baseY = height - baseTargetH - bottomBannerHeight + 120; 
+                
+                // Adjust Y based on scale (transform-origin: bottom) and user offset
+                const scaleOffset = baseTargetH - finalH;
+                const userOffsetPixels = (offsetYPercent / 100) * baseTargetH;
+                
+                const imgY = baseY + scaleOffset + userOffsetPixels;
+
+                ctx.drawImage(userImg, imgX, imgY, finalW, finalH);
+            }
+
+            // 3. Dark Gradient Overlay (Smoother transition for premium look)
+            const grad = ctx.createLinearGradient(0, height - 1200, 0, height - bottomBannerHeight);
+            grad.addColorStop(0, 'rgba(0,0,0,0)');
+            grad.addColorStop(0.3, 'rgba(0,0,0,0.2)');
+            grad.addColorStop(0.7, 'rgba(0,0,0,0.7)');
+            grad.addColorStop(1, 'rgba(0,0,0,0.95)');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, height - 1200, width, 1200 - bottomBannerHeight);
+
+            // 4. Top White Banner with Shadow
+            const topBannerHeight = 220;
+            ctx.save();
+            ctx.shadowColor = "rgba(0,0,0,0.3)";
+            ctx.shadowBlur = 30;
+            ctx.shadowOffsetY = 15;
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, width, topBannerHeight);
+            ctx.restore();
+            
+            ctx.fillStyle = '#1a4d2e';
+            ctx.font = '900 130px Anton';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText("ESRC ELECTION 2026 -2027", width/2, topBannerHeight / 2 + 10);
+
+            // 5. Candidate Name & Position
+            const name = document.getElementById('nameInp').value || "SADAT MAHMUD";
+            const pos = document.getElementById('posInp').value;
+
+            ctx.shadowColor = "rgba(0,0,0,0.9)";
+            ctx.shadowBlur = 25;
+            ctx.shadowOffsetY = 5;
+
+            // FIX: Reset text baseline from 'middle' to 'alphabetic' so they do not overlap
+            ctx.textBaseline = 'alphabetic';
+
+            ctx.fillStyle = "white";
+            ctx.font = "900 240px Anton";
+            ctx.fillText(name.toUpperCase(), width/2, height - bottomBannerHeight - 150);
+
+            // Position with Green Color and better spacing
+            ctx.fillStyle = "#2ecc71"; 
+            ctx.font = "900 115px Anton";
+            ctx.fillText(pos.toUpperCase(), width/2, height - bottomBannerHeight - 20);
+
+            // Reset shadow
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetY = 0;
+
+            // 6. Bottom Banner
+            ctx.fillStyle = '#08120a';
+            ctx.fillRect(0, height - bottomBannerHeight, width, bottomBannerHeight);
+
+            // Decorative rings on bottom banner
+            ctx.strokeStyle = '#1a4d2e';
+            for(let i=1; i<=4; i++) {
+                ctx.lineWidth = 15;
+                ctx.beginPath();
+                ctx.arc(-20, height + 20, i*70, 0, Math.PI*2);
+                ctx.stroke();
+            }
+            for(let i=1; i<=2; i++) {
+                ctx.lineWidth = 15;
+                ctx.beginPath();
+                ctx.arc(width + 20, height - 20, i*70, 0, Math.PI*2);
+                ctx.stroke();
+            }
+
+            // VOTE Text and Fingerprint Icon
+            const voteText = "VOTE";
+            ctx.font = "900 190px Anton";
+            ctx.textBaseline = "middle"; // FIX: Reset to middle for perfect centering
+            const textWidth = ctx.measureText(voteText).width;
+            
+            const iconScale = 7; // Increased scale so it matches the font size
+            const iconSize = 24 * iconScale; // The SVG is 24x24 natively
+            const gap = 40;
+            const totalWidth = textWidth + gap + iconSize;
+            
+            const startX = (width - totalWidth) / 2;
+            const centerY = height - (bottomBannerHeight / 2);
+
+            ctx.fillStyle = "white";
+            ctx.textAlign = "left";
+            // +15 is an optical adjustment to visually center the bold Anton font
+            ctx.fillText(voteText, startX, centerY + 15); 
+
+            // Draw SVG Fingerprint using Path2D
+            const fpPath = new Path2D("M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.02-.3 3 M7 22c-.6-2.8-.4-5.6.5-8 M17 22c.6-2.8.4-5.6-.5-8 M2 12a10 10 0 0 1 18.29-5.69 M12 2a10 10 0 0 1 10 10c0 1.1-.1 2.19-.3 3.25 M8 3.17A10 10 0 0 1 20.3 9.6 M12 18c-1.38 0-2.5-1.12-2.5-2.5V12a2.5 2.5 0 0 1 5 0v3.5c0 1.38-1.12 2.5-2.5 2.5Z");
+            
+            ctx.save();
+            // Perfectly align the icon with the center Y coordinate
+            ctx.translate(startX + textWidth + gap, centerY - (iconSize / 2));
+            ctx.scale(iconScale, iconScale); 
+            ctx.strokeStyle = "white";
+            ctx.lineWidth = 1.5; // Slightly thicker lines for visibility
+            ctx.lineCap = "round";
+            ctx.lineJoin = "round";
+            ctx.stroke(fpPath);
+            ctx.restore();
+
+            // 7. Final Trigger
+            const link = document.createElement('a');
+            link.download = `ESRC_Poster_${name.replace(/\s+/g, '_')}.png`;
+            link.href = canvas.toDataURL('image/png', 1.0);
+            link.click();
+        }
+
+        // --- MANIFESTO LOGIC ---
+        function switchTab(tab) {
+            const posterSec = document.getElementById('poster-section');
+            const manifestoSec = document.getElementById('manifesto-section');
+            const btns = document.querySelectorAll('.tab-btn');
+            
+            btns.forEach(b => b.classList.remove('active'));
+
+            if(tab === 'poster') {
+                posterSec.style.display = 'flex';
+                manifestoSec.style.display = 'none';
+                btns[0].classList.add('active');
+            } else {
+                posterSec.style.display = 'none';
+                manifestoSec.style.display = 'flex';
+                btns[1].classList.add('active');
+            }
+        }
+
+        function syncMan() {
+            const title = document.getElementById('manTitleInp').value || "MY MANIFESTO";
+            document.getElementById('viewManTitle').innerText = title.toUpperCase();
+
+            const points = document.getElementById('manPointsInp').value.split('\n').filter(p => p.trim() !== '');
+            const ul = document.getElementById('viewManPoints');
+            ul.innerHTML = '';
+            points.forEach(p => {
+                const li = document.createElement('li');
+                li.innerHTML = `<span class="m-check">✔</span> <span>${p}</span>`;
+                ul.appendChild(li);
+            });
+        }
+
+        // Helper function to auto-wrap text in Canvas
+        function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+            let words = text.split(' ');
+            let line = '';
+            let currentY = y;
+
+            for(let n = 0; n < words.length; n++) {
+                let testLine = line + words[n] + ' ';
+                let metrics = ctx.measureText(testLine);
+                let testWidth = metrics.width;
+                if (testWidth > maxWidth && n > 0) {
+                    ctx.fillText(line, x, currentY);
+                    line = words[n] + ' ';
+                    currentY += lineHeight;
+                }
+                else {
+                    line = testLine;
+                }
+            }
+            ctx.fillText(line, x, currentY);
+            return currentY + lineHeight;
+        }
+
+        async function downloadManifesto() {
+            const canvas = document.getElementById('render-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // HD Settings
+            const width = 2000;
+            const height = 3000;
+            canvas.width = width;
+            canvas.height = height;
+
+            // 1. Draw Background
+            const bg = new Image();
+            bg.crossOrigin = "anonymous";
+            bg.src = bgImgUrl;
+            await new Promise(resolve => bg.onload = resolve);
+            ctx.drawImage(bg, 0, 0, width, height);
+
+            // 2. Dark Overlay for readability
+            ctx.fillStyle = 'rgba(0,0,0,0.7)';
+            ctx.fillRect(0, 0, width, height);
+
+            // 3. Top White Banner
+            const topBannerHeight = 220;
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, width, topBannerHeight);
+            
+            ctx.fillStyle = '#1a4d2e';
+            ctx.font = '900 130px Anton';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText("ESRC ELECTION 2026 -2027", width/2, topBannerHeight / 2 + 10);
+
+            // 4. Manifesto Title
+            ctx.textBaseline = 'alphabetic';
+            ctx.shadowColor = "rgba(0,0,0,0.9)";
+            ctx.shadowBlur = 25;
+            ctx.shadowOffsetY = 5;
+
+            const title = document.getElementById('manTitleInp').value || "MY MANIFESTO";
+            ctx.fillStyle = "white";
+            ctx.font = "900 240px Anton";
+            ctx.textAlign = "center";
+            ctx.fillText(title.toUpperCase(), width/2, 520);
+
+            // 5. Promises/Points
+            ctx.shadowBlur = 10;
+            ctx.shadowOffsetY = 3;
+            ctx.textAlign = "left";
+            const points = document.getElementById('manPointsInp').value.split('\n').filter(p => p.trim() !== '');
+            
+            let startY = 720;
+            const startX = 200;
+            const maxWidth = width - 400;
+
+            points.forEach(point => {
+                // Checkmark
+                ctx.fillStyle = "#2ecc71";
+                ctx.font = "900 100px Arial";
+                ctx.fillText("✔", startX, startY);
+
+                // Text
+                ctx.fillStyle = "white";
+                ctx.font = "700 85px Montserrat";
+                // Wrap text and get next Y position
+                startY = wrapText(ctx, point.trim(), startX + 150, startY, maxWidth - 150, 110);
+                startY += 40; // extra padding between points
+            });
+
+            // Reset shadow
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetY = 0;
+
+            // 6. Bottom Banner (same logic as poster)
+            const bottomBannerHeight = 330;
+            ctx.fillStyle = '#08120a';
+            ctx.fillRect(0, height - bottomBannerHeight, width, bottomBannerHeight);
+
+            ctx.strokeStyle = '#1a4d2e';
+            for(let i=1; i<=4; i++) {
+                ctx.lineWidth = 15;
+                ctx.beginPath();
+                ctx.arc(-20, height + 20, i*70, 0, Math.PI*2);
+                ctx.stroke();
+            }
+            for(let i=1; i<=2; i++) {
+                ctx.lineWidth = 15;
+                ctx.beginPath();
+                ctx.arc(width + 20, height - 20, i*70, 0, Math.PI*2);
+                ctx.stroke();
+            }
+
+            const voteText = "VOTE";
+            ctx.font = "900 190px Anton";
+            ctx.textBaseline = "middle"; 
+            const textWidth = ctx.measureText(voteText).width;
+            
+            const iconScale = 7; 
+            const iconSize = 24 * iconScale; 
+            const gap = 40;
+            const totalWidth = textWidth + gap + iconSize;
+            
+            const startX_vote = (width - totalWidth) / 2;
+            const centerY = height - (bottomBannerHeight / 2);
+
+            ctx.fillStyle = "white";
+            ctx.textAlign = "left";
+            ctx.fillText(voteText, startX_vote, centerY + 15); 
+
+            const fpPath = new Path2D("M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.02-.3 3 M7 22c-.6-2.8-.4-5.6.5-8 M17 22c.6-2.8.4-5.6-.5-8 M2 12a10 10 0 0 1 18.29-5.69 M12 2a10 10 0 0 1 10 10c0 1.1-.1 2.19-.3 3.25 M8 3.17A10 10 0 0 1 20.3 9.6 M12 18c-1.38 0-2.5-1.12-2.5-2.5V12a2.5 2.5 0 0 1 5 0v3.5c0 1.38-1.12 2.5-2.5 2.5Z");
+            
+            ctx.save();
+            ctx.translate(startX_vote + textWidth + gap, centerY - (iconSize / 2));
+            ctx.scale(iconScale, iconScale); 
+            ctx.strokeStyle = "white";
+            ctx.lineWidth = 1.5; 
+            ctx.lineCap = "round";
+            ctx.lineJoin = "round";
+            ctx.stroke(fpPath);
+            ctx.restore();
+
+            // 7. Download
+            const link = document.createElement('a');
+            link.download = `ESRC_Manifesto_${title.replace(/\s+/g, '_')}.png`;
+            link.href = canvas.toDataURL('image/png', 1.0);
+            link.click();
+        }
+    </script>
+</body>
+</html>
